@@ -10,11 +10,16 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "@fawmi/vue-google-maps": "^0.9.79",
     "@mdi/font": "^7.4.47",
+    "@syncfusion/ej2-vue-calendars": "^25.2.3",
     "mdi": "^2.2.43",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
+    "vue3-datepicker": "^0.4.0",
+    "vue3-google-map": "^0.20.0",
+    "vue3-timepicker": "^1.0.0-beta.2",
     "vuetify": "^3.5.15"
   },
   "devDependencies": {

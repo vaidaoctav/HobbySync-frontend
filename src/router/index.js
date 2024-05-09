@@ -18,6 +18,31 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
+    },
+    {
+      path: '/hobby',
+      name: 'hobby',
+      component: () => import('../views/HobbyView.vue')
+    },
+    {
+      path: '/add-event',
+      name: 'add-event',
+      component: () => import('../views/AddEventView.vue')
+    },
+    {
+      path: '/event-details',
+      name: 'event-details',
+      component: () => import('../views/EventDetailsView.vue')
     }
   ]
 })
