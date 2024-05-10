@@ -32,13 +32,11 @@
           Add event
         </v-col>
         <v-col cols="3" class="text">
-          <router-link to="/">
-            <v-btn icon="mdi-logout"
+            <v-btn @click="logout" icon="mdi-logout"
                 size="x-large"
                 variant="elevated"
                 color="green">
             </v-btn>
-          </router-link>
           Logout
         </v-col>
       </v-row>
@@ -46,14 +44,21 @@
   </template>
   
   <script>
+import axios from 'axios';
+
   export default {
     name: 'Footer',
     methods: {
-      logout() {
-        // Implement the logout logic here
-        console.log("Logging out...");
-        // Redirect or perform other actions after logout
-      }
+      async logout() {
+                try {
+                    await axios.post('http://localhost:8080/hobby-sync/auth/logout', {}, 
+                      { withCredentials: true });
+                    localStorage.clear();
+                    this.$router.push('/login');
+                } catch (error) {
+                    console.error('Logout failed:', error);
+                }
+            }
     }
   }
   </script>

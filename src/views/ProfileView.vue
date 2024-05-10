@@ -3,9 +3,7 @@
     <div class="profile-container">
       <div class="left-panel">
         <div class="profile-info">
-          <img v-if="editableUser.profileImage" :src="editableUser.profileImage" alt="Profile Image"
-            class="profile-image" />
-          <img v-else src="../assets/defaultProfile.png" alt="Default Profile" class="profile-image" />
+          <div class="profile-photo" :style="{ 'background-image': 'url(' + editableUser.profileImage + ')' }"></div>
           <h3>{{ editableUser.firstName }} {{ editableUser.lastName }}</h3>
           <p><strong>Username:</strong> {{ editableUser.username }}</p>
           <p><strong>Email:</strong> {{ editableUser.email }}</p>
@@ -16,7 +14,7 @@
             <div class="input-type">First name:</div>
 
             <v-text-field v-model="editableUser.firstName" prepend-inner-icon="mdi-card-account-details" variant="solo"
-              class="donodash-input" density="compact" rounded></v-text-field>
+              class="donodash-input" density="compact" rounded ></v-text-field>
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Last name:</div>
@@ -38,10 +36,10 @@
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Picture:</div>
-            <v-file-input prepend-icon="" v-model="editableUser.profileImage" prepend-inner-icon="mdi-camera"
-              variant="solo" class="donodash-input" density="compact" rounded></v-file-input>
+            <v-file-input prepend-icon="" prepend-inner-icon="mdi-camera-outline" variant="solo"
+                            class="donodash-input" density="compact" rounded @change="onFilePicked"></v-file-input>
           </div>
-          <button style="height: 10px; justify-self: center; color: #4caf50;" @click="saveProfile">Salvează</button>
+          <button style="height: 10px; justify-self: center; color: #4caf50;" @click="openConfirmDialog">Salvează</button>
         </div>
       </div>
       <div class="right-panel">
@@ -64,16 +62,10 @@
       <v-dialog v-model="showPasswordDialog" persistent max-width="500px">
         <v-card>
           <v-card-title class="headline">Confirmare actualizare profil</v-card-title>
-          <v-card-text>
-            Introdu parola pentru a confirma actualizările.
-            <v-text-field v-model="passwordForConfirmation" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPassword ? 'text' : 'password'" @click:append="showPassword = !showPassword" label="Parolă"
-              single-line dense></v-text-field>
-          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="showPasswordDialog = false">Anulează</v-btn>
-            <v-btn color="blue darken-1" text @click="confirmProfileUpdate">Confirmă</v-btn>
+            <v-btn color="blue darken-1" text @click="saveProfile">Confirmă</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -85,6 +77,7 @@
 <script>
 import StarView from './StarView.vue';
 import Footer from '@/components/Footer.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -99,12 +92,12 @@ export default {
       visible: false,
       editMode: false,
       editableUser: {
-        firstName: 'Ion',
-        lastName: 'Popescu',
-        username: 'ionpopescu',
-        email: 'ion@example.com',
-        password: 'parola123',
-        profileImage: 'https://images.pexels.com/photos/281260/pexels-photo-281260.jpeg'
+        firstName: localStorage.getItem('firstName'),
+        lastName: localStorage.getItem('lastName'),
+        username: localStorage.getItem('username'),
+        email: localStorage.getItem('email'),
+        profileImage: '',
+        bio: localStorage.getItem('bio')
       },
       events: [
         { id: 1, name: 'Concert Rock', dateTime: '2023-05-20 20:00', description: 'Concert de rock în aer liber.', review: { comment: 'A fost incredibil!', rating: 5 }, showReview: false },
@@ -118,13 +111,15 @@ export default {
       ]
     };
   },
-
+  mounted() {
+    this.setupProfileImage();
+  },
   methods: {
     openConfirmDialog() {
       this.showPasswordDialog = true;
     },
     confirmProfileUpdate() {
-      if (this.passwordForConfirmation === this.editableUser.password) {
+      if (this.passwordForConfirmation === "lala") {
         this.saveProfile();
         this.showPasswordDialog = false;
         this.passwordForConfirmation = ''; // Resetează câmpul de parolă după folosire
@@ -132,9 +127,42 @@ export default {
         alert('Parola incorectă!'); // Afișează un mesaj de eroare
       }
     },
-    saveProfile() {
-      this.openConfirmDialog();
+    async saveProfile() {
       console.log('Profilul a fost actualizat:', this.editableUser);
+      this.showPasswordDialog=false;
+      try {
+        const formData = new FormData();
+        formData.append('firstName', this.editableUser.firstName);
+        formData.append('lastName', this.editableUser.lastName);
+        formData.append('username', this.editableUser.username);
+        formData.append('email', this.editableUser.email);
+        formData.append('bio',this.editableUser.bio)
+        formData.append('profilePicture', this.editableUser.profileImage);
+
+        // Make a POST request to updateUser endpoint
+        const response=await axios.put(`http://localhost:8080/hobby-sync/users/${localStorage.getItem('id')}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true
+        });
+        const { firstName, lastName, username, bio, profilePicture, email, userType,xCoord,yCoord,id} = response.data;
+                localStorage.setItem('firstName', firstName);
+                localStorage.setItem('lastName', lastName);
+                localStorage.setItem('username', username);
+                localStorage.setItem('youtubeChannel', bio);
+                localStorage.setItem('profilePicture', profilePicture);
+                localStorage.setItem('email', email);
+                localStorage.setItem('bio',bio);
+                localStorage.setItem('userType', userType);
+                localStorage.setItem('xCoord',xCoord);
+                localStorage.setItem('yCoord',yCoord);
+                localStorage.setItem('id',id);     
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        // Handle error
+      }
+      this.setupProfileImage();
       this.editMode = false;
     },
     toggleReview(id) {
@@ -142,9 +170,21 @@ export default {
       if (event) {
         event.showReview = !event.showReview;
       }
-    }
-  }
-};
+    },
+    setupProfileImage() {
+      const relativePath = localStorage.getItem('profilePicture');
+      if (relativePath) {
+        this.editableUser.profileImage = `http://localhost:8080${relativePath}`;
+      }
+    },
+    onFilePicked(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.editableUser.profileImage = file;
+            }
+  },
+}
+}
 </script>
   
 <style scoped>
@@ -236,7 +276,7 @@ button {
   background: #015986;
   border-radius: 50px;
   margin-bottom: 20px;
-  margin-left: 800px;
+  margin-left: 10px;
   font-family: "Platypi", serif;
   font-weight: 700;
   font-size: large;
@@ -248,6 +288,15 @@ button {
 
 .input-type {
   width: 100px;
+}
+
+.profile-photo {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 5px;
 }
 </style>
   

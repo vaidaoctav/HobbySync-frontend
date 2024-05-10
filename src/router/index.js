@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-
+import axios from 'axios'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -27,24 +27,45 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../views/ProfileView.vue'),
+      meta:{requiresAuth:true}
     },
     {
       path: '/hobby',
       name: 'hobby',
-      component: () => import('../views/HobbyView.vue')
+      component: () => import('../views/HobbyView.vue'),
+      meta:{requiresAuth:true}
+
     },
     {
       path: '/add-event',
       name: 'add-event',
-      component: () => import('../views/AddEventView.vue')
+      component: () => import('../views/AddEventView.vue'),
+      meta:{requiresAuth:true}
+
     },
     {
       path: '/event-details',
       name: 'event-details',
-      component: () => import('../views/EventDetailsView.vue')
+      component: () => import('../views/EventDetailsView.vue'),
+      meta:{requiresAuth:true}
+
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    axios.get('http://localhost:8080/hobby-sync/auth/validate-session', { withCredentials: true })
+      .then(() => {
+        next();
+      })
+      .catch(() => {
+        next('/login');
+      });
+  } else {
+    next();
+  }
+});
 
 export default router

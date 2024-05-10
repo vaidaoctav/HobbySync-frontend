@@ -16,31 +16,88 @@
                 <div class="input-type">Username:</div>
 
                 <v-text-field prepend-inner-icon="mdi-account-tie" variant="solo" class="input" density="compact"
-                    rounded></v-text-field>
+                    rounded v-model="username"></v-text-field>
 
                 <div class="input-type">Password:</div>
 
                 <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
                     prepend-inner-icon="mdi-lock" variant="solo" density="compact" class="input" rounded
-                    @click:append-inner="visible = !visible"></v-text-field>
-
-                <v-btn size="large" rounded="xl" class="login-button">
+                    @click:append-inner="visible = !visible" v-model="password"></v-text-field>
+                <v-overlay>
+                    <v-progress-circular v-if="loading" indeterminate color="white" size="64" style="margin-top: 20px;"></v-progress-circular>
+                </v-overlay>
+                <v-btn @click="login" size="large" rounded="xl" class="login-button">
                     Sign In
                 </v-btn>
                 <v-btn @click="goToRegister" color="white" variant="text" class="link-button">
                     Register now!
                 </v-btn>
             </v-card>
+            <v-dialog v-model="loginFailed" persistent max-width="290px">
+                <v-card>
+                    <v-card-title class="text-h5">Login Error</v-card-title>
+                    <v-card-text>{{ errorMessage }}</v-card-text>
+                    <v-card-actions>
+                        <v-btn color="green darken-1" text @click="errorMessage = ''; loginFailed = false">Close</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import { useRouter } from 'vue-router';
 export default {
     data: () => ({
-        visible: false
+        visible: false,
+        username: '',
+        password: '',
+        loading: false,
+        loginFailed: false,
+        errorMessage: ''
     }),
+    setup() {
+        const router = useRouter();
+        return { router };
+    },
     methods: {
+        async login() {
+            this.loading = true;
+            this.errorMessage = ''; 
+            try {
+                const response = await axios.post('http://localhost:8080/hobby-sync/auth/login', {
+                    username: this.username,
+                    password: this.password
+                }, {
+                    withCredentials: true
+                });
+
+                const { firstName, lastName, username, bio, profilePicture, email, userType,xCoord,yCoord,id} = response.data;
+                localStorage.setItem('firstName', firstName);
+                localStorage.setItem('lastName', lastName);
+                localStorage.setItem('username', username);
+                localStorage.setItem('youtubeChannel', bio);
+                localStorage.setItem('profilePicture', profilePicture);
+                localStorage.setItem('email', email);
+                localStorage.setItem('bio',bio);
+                localStorage.setItem('userType', userType);
+                localStorage.setItem('xCoord',xCoord);
+                localStorage.setItem('yCoord',yCoord);
+                localStorage.setItem('id',id);
+                setTimeout(() => {
+                    this.loading = false;
+                    this.router.push('/hobby');
+                }, 1000);
+            } catch (error) {
+                this.loading = false;
+                this.loginFailed = true;
+                this.errorMessage = error.response && error.response.data && error.response.data.message
+                    ? error.response.data.message
+                    : error.message;
+            }
+        },
         goToRegister() {
             this.$router.push({ name: 'register' });
         }
