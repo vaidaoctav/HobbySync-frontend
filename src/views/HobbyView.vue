@@ -3,8 +3,7 @@
         <v-card>
             <v-card-title class="headline">Custom Event Filter</v-card-title>
             <v-card-text>
-                <v-textarea v-model="customFilterText" label="Describe what you are looking for" rows="2"
-                    auto-grow></v-textarea>
+                <v-textarea v-model="customFilterText" label="Describe what you are looking for" rows="2" auto-grow></v-textarea>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -18,21 +17,16 @@
             <v-row>
                 <v-col>
                     <div class="category-scroller">
-                        <v-btn icon="mdi-arrow-left" variant="elevated" color="#4caf50"
-                            style="margin-left: 10px; margin-right: 10px; margin-top: 5px;" @click="scrollLeft"></v-btn>
+                        <v-btn icon="mdi-arrow-left" variant="elevated" color="#4caf50" style="margin-left: 10px; margin-right: 10px; margin-top: 5px;" @click="scrollLeft"></v-btn>
                         <div ref="scrollContainer" class="category-container">
-                            <v-chip class="ma-2" @click="selectCategory(null)" :outlined="selectedGroupId === null"
-                                color="blue lighten-2">
+                            <v-chip class="ma-2" @click="selectCategory(null)" :outlined="selectedGroupId === null" color="blue lighten-2">
                                 ALL
                             </v-chip>
-                            <v-chip v-for="group in hobbyGroups" :key="group.id" class="ma-2"
-                                @click="selectCategory(group.id)" :outlined="selectedGroupId !== group.id"
-                                color="blue lighten-2">
+                            <v-chip v-for="group in hobbyGroups" :key="group.id" class="ma-2" @click="selectCategory(group.id)" :outlined="selectedGroupId !== group.id" color="blue lighten-2">
                                 {{ group.name }}
                             </v-chip>
                         </div>
-                        <v-btn icon="mdi-arrow-right" variant="elevated" color="#4caf50"
-                            style="margin-left: 10px; margin-right: 10px; margin-top: 5px;" @click="scrollRight"></v-btn>
+                        <v-btn icon="mdi-arrow-right" variant="elevated" color="#4caf50" style="margin-left: 10px; margin-right: 10px; margin-top: 5px;" @click="scrollRight"></v-btn>
                     </div>
                 </v-col>
             </v-row>
@@ -56,12 +50,12 @@
                     <v-card class="event">
                         <v-card-title style="color:#4caf50">{{ event.name }}</v-card-title>
                         <v-card-subtitle>{{ event.dateTime }}</v-card-subtitle>
-                        <v-card-text style="height: 80px; overflow-y: auto;" v-if="selectedEventId === event.id">{{
-                            event.description }}</v-card-text>
+                        <v-card-text style="height: 80px; overflow-y: auto;" v-if="selectedEventId === event.id">{{ event.description }}</v-card-text>
                         <v-card-actions>
                             <v-btn icon @click="toggleEvent(event.id)">
                                 <v-icon>{{ selectedEventId === event.id ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                             </v-btn>
+                            <v-btn color="primary" @click="navigateToEventDetails(event.id)">Join</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -70,8 +64,9 @@
         <Footer></Footer>
     </v-layout>
 </template>
-<script>
 
+<script>
+import axios from 'axios';
 import Footer from '@/components/Footer.vue';
 
 export default {
@@ -140,23 +135,21 @@ export default {
             this.$refs.scrollEvents.scrollBy({ left: 200, behavior: 'smooth' });
 
         },
-        generateEvents() {
-            let events = [];
-            let eventIndex = 1;
-            for (let i = 1; i <= 3; i++) {
-                let numberOfEvents = i * 5; // 5, 10, 15 evenimente pentru fiecare
-                for (let j = 1; j <= numberOfEvents; j++) {
-                    events.push({
-                        id: eventIndex++,
-                        name: `Eveniment ${i}-${j}`,
-                        dateTime: `2024-0${i}-0${j}T19:00`,
-                        description: `fdjjjjjjffdfhhhhhhffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdddddddddddddddddddDescrierea evenimentului ${i}-${j}.`,
-                        hobbyGroupId: i
-                    });
-                }
+        async fetchHobbyGroups() {
+            try {
+                const response = await axios.get('http://localhost:8080/hobby-sync/hobby-groups', { withCredentials: true });
+                this.hobbyGroups = response.data;
+            } catch (error) {
+                console.error('Failed to fetch hobby groups:', error);
             }
-
-            return events;
+        },
+        async fetchEvents() {
+            try {
+                const response = await axios.get('http://localhost:8080/hobby-sync/hobby-events', { withCredentials: true });
+                this.events = response.data;
+            } catch (error) {
+                console.error('Failed to fetch events:', error);
+            }
         },
         openCustomFilterDialog() {
             // Integrate with ChatGPT or any other logic for custom filtering
@@ -178,34 +171,14 @@ export default {
             // Aici vei implementa logica de filtrare pe baza descrierii
             console.log('Applying custom filter with description:', this.customFilterText);
             this.dialog = false;
+        },
+        navigateToEventDetails(eventId) {
+            this.$router.push({ path: `/event-details/${eventId}` });
         }
     },
     mounted() {
-        this.hobbyGroups = [
-            { id: 1, name: 'Artă și Design' },
-            { id: 2, name: 'Muzică' },
-            { id: 3, name: 'Sport' },
-            { id: 4, name: 'Literatură' },
-            { id: 5, name: 'Cinematografie' },
-            { id: 6, name: 'Tehnologie' },
-            { id: 7, name: 'Gastronomie' },
-            { id: 8, name: 'Modă' },
-            { id: 9, name: 'Natură și Mediu' },
-            { id: 10, name: 'Științe' },
-            { id: 11, name: 'Artă și Design' },
-            { id: 12, name: 'Muzică' },
-            { id: 13, name: 'Sport' },
-            { id: 14, name: 'Literatură' },
-            { id: 15, name: 'Cinematografie' },
-            { id: 16, name: 'Tehnologie' },
-            { id: 17, name: 'Gastronomie' },
-            { id: 18, name: 'Modă' },
-            { id: 19, name: 'Natură și Mediu' },
-            { id: 20, name: 'Științe' }
-        ];
-
-        // Generarea evenimentelor pentru primele trei categorii
-        this.events = this.generateEvents();
+        this.fetchHobbyGroups();
+        this.fetchEvents();
     }
 };
 </script>

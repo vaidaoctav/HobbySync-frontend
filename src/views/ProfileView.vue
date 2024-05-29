@@ -100,10 +100,10 @@ export default {
         bio: localStorage.getItem('bio')
       },
       events: [
-        { id: 1, name: 'Concert Rock', dateTime: '2023-05-20 20:00', description: 'Concert de rock în aer liber.', review: { comment: 'A fost incredibil!', rating: 5 }, showReview: false },
+        { id: 1, name: 'Concert de Muzică', dateTime: '2023-05-20 20:00', description: 'Concert de muzică în aer liber.', review: { comment: 'A fost incredibil!', rating: 5 }, showReview: false },
         { id: 2, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 3, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 4, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
+        { id: 3, name: 'Maratonul Primăverii', dateTime: '2023-06-11 16:00', description: 'Participă la maratonul anual și testează-ți limitele într-o atmosferă plină de energie.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
+        { id: 4, name: 'Expoziție de Artă Contemporană', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
         { id: 5, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
         { id: 6, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
         { id: 7, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false }
@@ -162,7 +162,6 @@ export default {
         console.error('Error updating profile:', error);
         // Handle error
       }
-      this.setupProfileImage();
       this.editMode = false;
     },
     toggleReview(id) {

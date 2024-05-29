@@ -78,7 +78,6 @@ export default {
                 localStorage.setItem('firstName', firstName);
                 localStorage.setItem('lastName', lastName);
                 localStorage.setItem('username', username);
-                localStorage.setItem('youtubeChannel', bio);
                 localStorage.setItem('profilePicture', profilePicture);
                 localStorage.setItem('email', email);
                 localStorage.setItem('bio',bio);

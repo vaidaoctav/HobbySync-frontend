@@ -9,90 +9,96 @@
                             <v-row>
                                 <v-col cols="12">
                                     <div class="custom-class">
-                                    <div class="input-type">Hobby:</div>
-                                    <v-select v-model="event.hobbyGroupName" :items="hobbyGroups.map(group => group.name)"
-                                        required variant="solo" class="donodash-input-custom" density="compact"
-                                        rounded></v-select>
+                                        <div class="input-type">Hobby:</div>
+                                        <v-select v-model="selectedHobby" :items="hobbyGroups.map(group => group.name)"
+                                            required variant="solo" class="donodash-input-custom" density="compact"
+                                            rounded></v-select>
                                     </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Event Name:</div>
-                                    <v-text-field v-model="event.name" prepend-inner-icon="mdi-account-group-outline"
-                                        required variant="solo" class="donodash-input" density="compact"
-                                        rounded></v-text-field>
-                                    </div>       
+                                        <div class="input-type">Event Name:</div>
+                                        <v-text-field v-model="event.name" prepend-inner-icon="mdi-account-group-outline"
+                                            required variant="solo" class="donodash-input" density="compact"
+                                            rounded></v-text-field>
+                                    </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Description</div>
-                                    <v-text-field v-model="event.description" prepend-inner-icon="mdi-text" required
-                                        variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
-                                    </div>       
+                                        <div class="input-type">Description</div>
+                                        <v-text-field v-model="event.description" prepend-inner-icon="mdi-text" required
+                                            variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
+                                    </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Date:</div>
-                                    <datepicker format="yyyy:MM:dd"
-                                        style="background-color: white ; width: 150px;
-                                        height: 35px; margin-bottom: 25px; margin-left: 20px; text-align: center; "
-                                        v-model="picked" />
-                                    </div>   
+                                        <div class="input-type">Date:</div>
+                                        <datepicker format="yyyy:MM:dd" style="background-color: white ; width: 150px;
+                                            height: 35px; margin-bottom: 25px; margin-left: 20px; text-align: center; "
+                                            v-model="picked" />
+                                    </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Capacity:</div>
-                                    <v-text-field type="text" v-model="event.capacity"
-                                        prepend-inner-icon="mdi-chair-rolling" required variant="solo"
-                                        class="donodash-input" density="compact" rounded></v-text-field>
-                                    </div>       
+                                        <div class="input-type">Capacity:</div>
+                                        <v-text-field type="text" v-model="event.capacity"
+                                            prepend-inner-icon="mdi-chair-rolling" required variant="solo"
+                                            class="donodash-input" density="compact" rounded></v-text-field>
+                                    </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Fee:</div>
-                                    <v-text-field type="text" v-model="event.fee" prepend-inner-icon="mdi-cash" required
-                                        variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
-                                    </div>   
+                                        <div class="input-type">Fee:</div>
+                                        <v-text-field type="text" v-model="event.fee" prepend-inner-icon="mdi-cash" required
+                                            variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
+                                    </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                    <div class="input-type">Time:</div>
-                                    <timepicker format="hh:mm" style="background-color: white ; width: 150px;
-                                        height: 35px; margin-bottom: 25px; margin-left: 20px; text-align: center;"
-                                        v-model="rest_time"></timepicker>
-                                    </div>      
+                                        <div class="input-type">Time:</div>
+                                        <timepicker format="hh:mm" style="background-color: white ; width: 150px;
+                                            height: 35px; margin-bottom: 25px; margin-left: 20px; text-align: center;"
+                                            v-model="rest_time"></timepicker>
+                                    </div>
                                 </v-col>
                                 <v-col cols="12">
                                     <div class="input-type-location">Location:</div>
                                     <div class="custom-class-map">
-                                    <GoogleMap api-key="AIzaSyBKQsulm2ANzxCYno_-9IBsh1LyGg6bS8k"
-                                        style="width: 925px; height: 400px" :center="center" :zoom="10">
-                                        <Marker :options="{ position: center }" />
-                                    </GoogleMap>
-                                </div>
+                                        <GoogleMap api-key="AIzaSyBKQsulm2ANzxCYno_-9IBsh1LyGg6bS8k"
+                                            style="width: 925px; height: 400px" :center="center" :zoom="10"
+                                            @click="updateLocation">
+                                            <Marker :options="{ position: markerPosition }" />
+                                        </GoogleMap>
+                                    </div>
                                 </v-col>
                             </v-row>
                             <div style="display: flex; flex-direction: column; margin-top: 5px;">
                                 <v-btn large color="success" class="ma-2" @click="submitEvent"
                                     style="align-self: center; justify-self: center;">Create Event</v-btn>
                             </div>
-
                         </v-container>
                     </v-form>
                 </v-card>
             </div>
         </div>
         <Footer></Footer>
+        <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="3000">
+            {{ snackbarMessage }}
+            <template v-slot:action="{ attrs }">
+                <v-btn color="white" text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+            </template>
+        </v-snackbar>
     </v-layout>
 </template>
 
+
 <script>
+import axios from 'axios';
 import Footer from '@/components/Footer.vue';
 import Datepicker from 'vue3-datepicker/src/datepicker/Datepicker.vue'
 import Timepicker from 'vue3-timepicker/src/VueTimepicker.vue'
 import { GoogleMap, Marker } from 'vue3-google-map'
 
-const center = { lat: 40.689247, lng: -74.044502 }
 
 export default {
     components: {
@@ -105,6 +111,7 @@ export default {
     data() {
         return {
             center: { lat: 51.093048, lng: 6.842120 },
+            markerPosition: { lat: 51.093048, lng: 6.842120 },
             menuDate: '',
             picked: new Date(),
             menuTime: '',
@@ -125,21 +132,73 @@ export default {
             selectedDate: null,
             // selectedTime: '10:00',
             mapDialog: false,
-            hobbyGroups: [{ id: 1, name: 'Art & Design' },{ id: 2, name: 'Sports' }]
+            hobbyGroups: [],
+            hobbyNames: [],
+            selectedHobby: null,
+            snackbar: false,
+            snackbarMessage: '',
+            snackbarColor: ''
         };
     },
     methods: {
-        submitEvent() {
-            this.event.date = this.selectedDate;
-            this.event.time = this.selectedTime;
-            console.log('Event Data:', this.event);
-            // Add your method to submit event data to your backend
+        updateLocation(event) {
+            this.markerPosition = {
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng()
+            };
+            this.center = this.markerPosition;
         },
-        openMapDialog() {
-            console.log('Open map dialog here.');
-            // Implement map dialog logic here
-            this.mapDialog = true; // Set mapDialog to true to open it
+        async fetchHobbyGroups() {
+            try {
+                const response = await axios.get('http://localhost:8080/hobby-sync/hobby-groups', { withCredentials: true });
+                this.hobbyGroups = response.data;
+                this.hobbyNames = this.hobbyGroups.map(group => group.name);
+            } catch (error) {
+                console.error('Failed to fetch hobby groups:', error);
+            }
+        },
+        async submitEvent() {
+            try {
+                const selectedHobbyObj = this.hobbyGroups.find(group => group.name === this.selectedHobby);
+                // If the hobby object is found, extract the id and submit it
+                if (selectedHobbyObj) {
+                    this.event.hobbyGroupId = selectedHobbyObj.id;
+                    // Submit hobbyGroupId along with other event data
+                }
+
+                const isoDateTime = new Date(this.picked).toISOString();
+
+                // Extract the time from rest_time
+                const time = `${this.rest_time.hh}:${this.rest_time.mm}`;
+
+                // Combine date and time to create the dateTime string
+                const dateTime = `${isoDateTime.substring(0, 10)}T${time}:00`;
+                const event = {
+                    name: this.event.name,
+                    description: this.event.description,
+                    capacity: this.event.capacity,
+                    fee: this.event.fee,
+                    dateTime: dateTime,
+                    xCoord: this.center.lat,
+                    yCoord: this.center.lng,
+                    hobbyGroupId: this.event.hobbyGroupId // Folosește hobbyGroupId în loc de hobbyGroupName
+                };
+                const response = await axios.post('http://localhost:8080/hobby-sync/hobby-events', event, { withCredentials: true });
+                console.log('Event added successfully:', response.data);
+                this.showSnackbar('Event added successfully!', 'success');
+            } catch (error) {
+                console.error('Failed to add event:', error);
+                this.showSnackbar('Failed to add event!', 'error');
+            }
+        },
+        showSnackbar(message, color) {
+            this.snackbarMessage = message;
+            this.snackbarColor = color;
+            this.snackbar = true;
         }
+    },
+    mounted() {
+        this.fetchHobbyGroups();
     }
 };
 </script>
@@ -266,13 +325,16 @@ export default {
 :deep(.v-messages__message) {
     color: white;
 }
-.custom-class{
+
+.custom-class {
     margin-left: 75px;
 }
-.custom-class-map{
+
+.custom-class-map {
     margin-left: 100px;
 }
-.input-type-location{
+
+.input-type-location {
     margin-left: 90px;
     margin-bottom: 5px;
     margin-top: 10px;
@@ -281,6 +343,6 @@ export default {
     font-weight: 200;
     font-size: medium;
     font-style: normal;
-    color: white;  
+    color: white;
 }
 </style>
