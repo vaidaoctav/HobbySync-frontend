@@ -55,7 +55,7 @@
                             <v-btn icon @click="toggleEvent(event.id)">
                                 <v-icon>{{ selectedEventId === event.id ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                             </v-btn>
-                            <v-btn color="primary" @click="navigateToEventDetails(event.id)">Join</v-btn>
+                            <v-btn color="#4caf50" @click="navigateToEventDetails(event.id)">View Event</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -75,8 +75,9 @@ export default {
     },
     data() {
         return {
-            hobbyGroups: [],  // Lista cu grupurile de hobby-uri
-            events: [],       // Lista cu evenimentele
+            hobbyGroups: [],  
+            events: [],       
+            filteredEvents: [],
             selectedGroupId: null,
             selectedEventId: null,
             sortOrder: '',
@@ -89,35 +90,31 @@ export default {
     },
     computed: {
         filteredEvents() {
-            let filtered = this.events.filter(event =>
-                this.selectedGroupId === null || event.hobbyGroupId === this.selectedGroupId
-            );
-            if (this.sortOrder.includes('Date')) {
-                filtered.sort((a, b) => this.sortOrder.includes('Descending') ?
-                    new Date(b.dateTime) - new Date(a.dateTime) : new Date(a.dateTime) - new Date(b.dateTime));
-            } else if (this.sortOrder.includes('Alphabetically')) {
-                filtered.sort((a, b) => this.sortOrder.includes('Descending') ?
-                    b.name.localeCompare(a.name) : a.name.localeCompare(b.name));
-            }
-            else if (this.sortOrder === 'Custom Description') {
-                // Aplicați filtrul personalizat după descriere
-                filtered = filtered.filter(event =>
-                    event.description.toLowerCase().includes(this.customFilterText.toLowerCase())
-                );
-            }
-            // Adăugați filtrul pentru căutarea după nume
-            if (this.customFilterText) {
-                filtered = filtered.filter(event =>
-                    event.name.toLowerCase().includes(this.customFilterText.toLowerCase())
-                );
-            }
-            return filtered;
+        let filtered = this.filteredEvents.length ? this.filteredEvents : this.events;
+
+        filtered = filtered.filter(event =>
+            this.selectedGroupId === null || event.hobbyGroupId === this.selectedGroupId
+        );
+        if (this.sortOrder.includes('Date')) {
+            filtered.sort((a, b) => this.sortOrder.includes('Descending') ?
+                new Date(b.dateTime) - new Date(a.dateTime) : new Date(a.dateTime) - new Date(b.dateTime));
+        } else if (this.sortOrder.includes('Alphabetically')) {
+            filtered.sort((a, b) => this.sortOrder.includes('Descending') ?
+                b.name.localeCompare(a.name) : a.name.localeCompare(b.name));
         }
+
+        if (this.searchText) {
+            filtered = filtered.filter(event =>
+                event.name.toLowerCase().includes(this.searchText.toLowerCase())
+            );
+        }
+        return filtered;
+    }
     },
     methods: {
         selectCategory(groupId) {
             this.selectedGroupId = groupId;
-            this.selectedEventId = null;  // Resetare la selectarea unei noi categorii
+            this.selectedEventId = null;  
         },
         toggleEvent(eventId) {
             this.selectedEventId = this.selectedEventId === eventId ? null : eventId;
@@ -152,26 +149,33 @@ export default {
             }
         },
         openCustomFilterDialog() {
-            // Integrate with ChatGPT or any other logic for custom filtering
             console.log("Open custom filter dialog");
         },
         applyFilters() {
             console.log("Applying filters");
-            // Update customFilterText directly for the "Search events" field
             if (this.sortOrder !== 'Custom Description') {
                 this.searchFilterText = this.searchText;
             }
             if (this.sortOrder === 'Custom Description') {
-                // Deschidem dialogul pentru filtrare personalizată
                 this.dialog = true;
             }
-            // You might want to do something here when filters are applied
         },
-        applyCustomFilter() {
-            // Aici vei implementa logica de filtrare pe baza descrierii
-            console.log('Applying custom filter with description:', this.customFilterText);
-            this.dialog = false;
-        },
+        async applyCustomFilter() {
+        try {
+            const response = await axios.get('http://localhost:8080/recommend-events', {
+                params: { prompt: this.customFilterText },
+                withCredentials: true
+            });
+
+            const recommendedEventIds = response.data;
+
+            this.filteredEvents = this.events.filter(event => recommendedEventIds.includes(event.id));
+        } catch (error) {
+            console.error('Failed to fetch recommended events:', error);
+        }
+        
+        this.dialog = false;
+    },
         navigateToEventDetails(eventId) {
             this.$router.push({ path: `/event-details/${eventId}` });
         }
@@ -240,15 +244,6 @@ export default {
     margin-top: 10px;
 }
 
-/* .mb-4 {
-    width: 100vw;
-    height: 70vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: auto;
-    margin-left: 10px;
-    margin-top: 10px;
-} */
 .mb-4 {
     width: 100.5vw;
     height: 64.5vh;
@@ -256,13 +251,9 @@ export default {
     flex-direction: column;
     overflow-x: auto;
     flex-wrap: wrap;
-    /* Asigurați-vă că elementele pot să se înfășoare când nu există suficient spațiu */
     align-items: flex-start;
-    /* Aliniază elementele la partea de sus a containerului */
     justify-content: flex-start;
-    /* Aliniază elementele la începutul containerului */
     gap: 5px;
-    /* Adaugă un spațiu între elemente */
 }
 
 .column {
@@ -274,7 +265,6 @@ export default {
 .v-select,
 .v-text-field {
     margin-bottom: 10px;
-    /* Spațiu între elementele de filtrare */
 }
 
 .custom {

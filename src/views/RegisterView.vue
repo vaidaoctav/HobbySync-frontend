@@ -17,17 +17,17 @@
                     <v-col cols="4">
                         <div class="input-type">First name:</div>
 
-                        <v-text-field prepend-inner-icon="mdi-card-account-details" variant="solo" class="donodash-input"
+                        <v-text-field prepend-inner-icon="mdi-card-account-details" variant="solo" class="input"
                             density="compact" rounded v-model="firstName"></v-text-field>
 
                         <div class="input-type">Last name:</div>
 
-                        <v-text-field prepend-inner-icon="mdi-card-account-details" variant="solo" class="donodash-input"
+                        <v-text-field prepend-inner-icon="mdi-card-account-details" variant="solo" class="input"
                             density="compact" rounded v-model="lastName"></v-text-field>
 
                         <div class="input-type">Username:</div>
 
-                        <v-text-field prepend-inner-icon="mdi-account-tie" variant="solo" class="donodash-input"
+                        <v-text-field prepend-inner-icon="mdi-account-tie" variant="solo" class="input"
                             density="compact" rounded v-model="username"></v-text-field>
 
 
@@ -36,7 +36,7 @@
 
                         <div class="input-type">Email address:</div>
 
-                        <v-text-field prepend-inner-icon="mdi-email-search-outline" variant="solo" class="donodash-input"
+                        <v-text-field prepend-inner-icon="mdi-email-search-outline" variant="solo" class="input"
                             density="compact" rounded v-model="email"></v-text-field>
 
                         <div class="input-type">Password:</div>
@@ -44,19 +44,20 @@
                         <v-text-field :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                             :type="visible ? 'text' : 'password'" prepend-inner-icon="mdi-lock"
                             hint="Must be at least 8 characters long, with 1 alphabetical character, 1 digit and 1 special character: .,_!?:;"
-                            variant="solo" density="compact" class="donodash-input" rounded
+                            variant="solo" density="compact" class="input" rounded
                             @click:append-inner="visible = !visible" v-model="password"></v-text-field>
 
                         <div class="input-type">Profile picture:</div>
 
                         <v-file-input prepend-icon="" prepend-inner-icon="mdi-camera-outline" variant="solo"
-                            class="donodash-input" density="compact" rounded @change="onFilePicked"></v-file-input>
+                            class="input" density="compact" rounded @change="onFilePicked"></v-file-input>
 
 
                     </v-col>
                 </v-row>
 
-                <v-btn size="large" rounded="xl" class="donodash-orange-button" @click="register">
+                <v-btn size="large" rounded="xl" class="blue
+            -button" @click="register">
                     Sign up
                 </v-btn>
 
@@ -177,14 +178,14 @@ export default {
     color: white;
 }
 
-.donodash-input {
+.input {
     width: 400px;
     height: 30px;
     margin-bottom: 25px;
     margin-left: 20px;
 }
 
-.donodash-orange-button {
+.blue-button {
     font-family: "Platypi", serif;
     font-weight: 400;
     font-style: normal;

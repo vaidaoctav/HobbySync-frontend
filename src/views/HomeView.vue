@@ -9,7 +9,6 @@
     </div>
     <div style="display: flex; flex-direction: row;">
       <header class="header">
-        <!-- <h1>HobbySync</h1> -->
         <img src="../assets/LogoBlue.png" width="600px" height="150px"
           style="align-self: center; margin-bottom: 75px; margin-top: 125px;">
         <p>Connect with local events and communities that share your passions. Discover, engage, and expand your hobbies

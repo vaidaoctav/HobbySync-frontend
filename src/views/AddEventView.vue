@@ -11,7 +11,7 @@
                                     <div class="custom-class">
                                         <div class="input-type">Hobby:</div>
                                         <v-select v-model="selectedHobby" :items="hobbyGroups.map(group => group.name)"
-                                            required variant="solo" class="donodash-input-custom" density="compact"
+                                            required variant="solo" class="input-custom" density="compact"
                                             rounded></v-select>
                                     </div>
                                 </v-col>
@@ -19,15 +19,15 @@
                                     <div class="custom-class">
                                         <div class="input-type">Event Name:</div>
                                         <v-text-field v-model="event.name" prepend-inner-icon="mdi-account-group-outline"
-                                            required variant="solo" class="donodash-input" density="compact"
+                                            required variant="solo" class="input" density="compact"
                                             rounded></v-text-field>
                                     </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
-                                        <div class="input-type">Description</div>
+                                        <div class="input-type">Description:</div>
                                         <v-text-field v-model="event.description" prepend-inner-icon="mdi-text" required
-                                            variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
+                                            variant="solo" class="input" density="compact" rounded></v-text-field>
                                     </div>
                                 </v-col>
                                 <v-col cols="4">
@@ -43,14 +43,14 @@
                                         <div class="input-type">Capacity:</div>
                                         <v-text-field type="text" v-model="event.capacity"
                                             prepend-inner-icon="mdi-chair-rolling" required variant="solo"
-                                            class="donodash-input" density="compact" rounded></v-text-field>
+                                            class="input" density="compact" rounded></v-text-field>
                                     </div>
                                 </v-col>
                                 <v-col cols="4">
                                     <div class="custom-class">
                                         <div class="input-type">Fee:</div>
                                         <v-text-field type="text" v-model="event.fee" prepend-inner-icon="mdi-cash" required
-                                            variant="solo" class="donodash-input" density="compact" rounded></v-text-field>
+                                            variant="solo" class="input" density="compact" rounded></v-text-field>
                                     </div>
                                 </v-col>
                                 <v-col cols="4">
@@ -121,7 +121,6 @@ export default {
                 capacity: '',
                 fee: '',
                 date: null,
-                // time: '10:00',
                 hobbyGroupName: '',
                 location: ''
             },
@@ -130,7 +129,6 @@ export default {
                 mm: "00",
             },
             selectedDate: null,
-            // selectedTime: '10:00',
             mapDialog: false,
             hobbyGroups: [],
             hobbyNames: [],
@@ -160,18 +158,14 @@ export default {
         async submitEvent() {
             try {
                 const selectedHobbyObj = this.hobbyGroups.find(group => group.name === this.selectedHobby);
-                // If the hobby object is found, extract the id and submit it
                 if (selectedHobbyObj) {
                     this.event.hobbyGroupId = selectedHobbyObj.id;
-                    // Submit hobbyGroupId along with other event data
                 }
 
                 const isoDateTime = new Date(this.picked).toISOString();
 
-                // Extract the time from rest_time
                 const time = `${this.rest_time.hh}:${this.rest_time.mm}`;
 
-                // Combine date and time to create the dateTime string
                 const dateTime = `${isoDateTime.substring(0, 10)}T${time}:00`;
                 const event = {
                     name: this.event.name,
@@ -181,7 +175,7 @@ export default {
                     dateTime: dateTime,
                     xCoord: this.center.lat,
                     yCoord: this.center.lng,
-                    hobbyGroupId: this.event.hobbyGroupId // Folosește hobbyGroupId în loc de hobbyGroupName
+                    hobbyGroupId: this.event.hobbyGroupId 
                 };
                 const response = await axios.post('http://localhost:8080/hobby-sync/hobby-events', event, { withCredentials: true });
                 console.log('Event added successfully:', response.data);
@@ -206,7 +200,6 @@ export default {
 <style scoped>
 .datepicker-container {
     --datepicker-bg-color: white;
-    /* Override the background color variable */
 }
 
 .containment {
@@ -270,14 +263,14 @@ export default {
     color: white;
 }
 
-.donodash-input {
+.input {
     width: 375px;
     height: 30px;
     margin-bottom: 25px;
     margin-left: 20px;
 }
 
-.donodash-input-cust {
+.input-cust {
     width: 400px;
     height: 30px;
     margin-bottom: 25px;
@@ -285,22 +278,11 @@ export default {
     color: white !important;
 }
 
-.donodash-input-custom {
+.input-custom {
     width: 925px;
     height: 30px;
     margin-bottom: 25px;
     margin-left: 20px;
-}
-
-.donodash-orange-button {
-    font-family: "Platypi", serif;
-    font-weight: 400;
-    font-style: normal;
-    background-color: #46c6ed;
-    color: white;
-    width: 200px;
-    margin-top: 10px;
-    margin-left: 388px;
 }
 
 .some-text {

@@ -7,50 +7,50 @@
           <h3>{{ editableUser.firstName }} {{ editableUser.lastName }}</h3>
           <p><strong>Username:</strong> {{ editableUser.username }}</p>
           <p><strong>Email:</strong> {{ editableUser.email }}</p>
-          <button style="color:#4caf50 " @click="editMode = !editMode">Editare Profil</button>
+          <button style="color:#4caf50 " @click="editMode = !editMode">Edit Profile</button>
         </div>
         <div v-if="editMode" class="edit-form">
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">First name:</div>
 
             <v-text-field v-model="editableUser.firstName" prepend-inner-icon="mdi-card-account-details" variant="solo"
-              class="donodash-input" density="compact" rounded ></v-text-field>
+              class="input" density="compact" rounded ></v-text-field>
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Last name:</div>
 
             <v-text-field v-model="editableUser.lastName" prepend-inner-icon="mdi-card-account-details" variant="solo"
-              class="donodash-input" density="compact" rounded></v-text-field>
+              class="input" density="compact" rounded></v-text-field>
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Username:</div>
 
             <v-text-field v-model="editableUser.username" prepend-inner-icon="mdi-account-tie" variant="solo"
-              class="donodash-input" density="compact" rounded></v-text-field>
+              class="input" density="compact" rounded></v-text-field>
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Email:</div>
 
             <v-text-field v-model="editableUser.email" prepend-inner-icon="mdi-email-search-outline" variant="solo"
-              class="donodash-input" density="compact" rounded></v-text-field>
+              class="input" density="compact" rounded></v-text-field>
           </div>
           <div style="display: flex; flex-direction: row; justify-content: space-between;">
             <div class="input-type">Picture:</div>
             <v-file-input prepend-icon="" prepend-inner-icon="mdi-camera-outline" variant="solo"
-                            class="donodash-input" density="compact" rounded @change="onFilePicked"></v-file-input>
+                            class="input" density="compact" rounded @change="onFilePicked"></v-file-input>
           </div>
-          <button style="height: 10px; justify-self: center; color: #4caf50;" @click="openConfirmDialog">Salvează</button>
+          <button style="height: 10px; justify-self: center; color: #4caf50;" @click="openConfirmDialog">Save</button>
         </div>
       </div>
       <div class="right-panel">
         <div class="events-header">
-          <h2 style="text-align: center; color: #4caf50;">Evenimentele Mele</h2>
+          <h2 style="text-align: center; color: #4caf50;">My Events</h2>
           <div class="events">
             <div v-for="event in events" :key="event.id" class="event">
               <h3>{{ event.name }}</h3>
               <p>{{ event.dateTime }}</p>
               <p>{{ event.description }}</p>
-              <button style="color: #4caf50" @click="toggleReview(event.id)">Vezi Review</button>
+              <button style="color: #4caf50" @click="toggleReview(event.id)">See review</button>
               <div v-if="event.showReview" class="review">
                 <p>{{ event.review.comment }}</p>
                 <star-view :rating="event.review.rating"></star-view>
@@ -61,11 +61,11 @@
       </div>
       <v-dialog v-model="showPasswordDialog" persistent max-width="500px">
         <v-card>
-          <v-card-title class="headline">Confirmare actualizare profil</v-card-title>
+          <v-card-title class="headline">Confirm that you want to update your profile</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="showPasswordDialog = false">Anulează</v-btn>
-            <v-btn color="blue darken-1" text @click="saveProfile">Confirmă</v-btn>
+            <v-btn color="blue darken-1" text @click="showPasswordDialog = false">Cancel</v-btn>
+            <v-btn color="blue darken-1" text @click="saveProfile">Confirm</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -91,6 +91,7 @@ export default {
       showPassword: false,
       visible: false,
       editMode: false,
+      events: [],
       editableUser: {
         firstName: localStorage.getItem('firstName'),
         lastName: localStorage.getItem('lastName'),
@@ -98,37 +99,40 @@ export default {
         email: localStorage.getItem('email'),
         profileImage: '',
         bio: localStorage.getItem('bio')
-      },
-      events: [
-        { id: 1, name: 'Concert de Muzică', dateTime: '2023-05-20 20:00', description: 'Concert de muzică în aer liber.', review: { comment: 'A fost incredibil!', rating: 5 }, showReview: false },
-        { id: 2, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 3, name: 'Maratonul Primăverii', dateTime: '2023-06-11 16:00', description: 'Participă la maratonul anual și testează-ți limitele într-o atmosferă plină de energie.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 4, name: 'Expoziție de Artă Contemporană', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 5, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 6, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false },
-        { id: 7, name: 'Atelier de Pictură', dateTime: '2023-06-11 16:00', description: 'Atelier de pictură pentru începători.', review: { comment: 'Foarte instructiv.', rating: 4 }, showReview: false }
-
-      ]
+      }
     };
   },
   mounted() {
     this.setupProfileImage();
+    this.fetchEventReviews();
   },
   methods: {
+    async fetchEventReviews() {
+    try {
+      const userId = localStorage.getItem('id'); // sau cum obții ID-ul utilizatorului
+      const response = await axios.get(`http://localhost:8080/hobby-sync/review/user/${userId}`, {
+        withCredentials: true
+      });
+      this.events = response.data.map(event => ({
+        id: event.eventId,
+        name: event.eventName,
+        dateTime: event.eventDateTime,
+        description: event.eventDescription,
+        review: {
+          comment: event.reviewComment,
+          rating: event.reviewRating
+        },
+        showReview: false
+      }));
+    } catch (error) {
+      console.error('Error fetching event reviews:', error);
+    }
+  },
     openConfirmDialog() {
       this.showPasswordDialog = true;
     },
-    confirmProfileUpdate() {
-      if (this.passwordForConfirmation === "lala") {
-        this.saveProfile();
-        this.showPasswordDialog = false;
-        this.passwordForConfirmation = ''; // Resetează câmpul de parolă după folosire
-      } else {
-        alert('Parola incorectă!'); // Afișează un mesaj de eroare
-      }
-    },
     async saveProfile() {
-      console.log('Profilul a fost actualizat:', this.editableUser);
+      console.log('Profilul was updated', this.editableUser);
       this.showPasswordDialog=false;
       try {
         const formData = new FormData();
@@ -139,7 +143,6 @@ export default {
         formData.append('bio',this.editableUser.bio)
         formData.append('profilePicture', this.editableUser.profileImage);
 
-        // Make a POST request to updateUser endpoint
         const response=await axios.put(`http://localhost:8080/hobby-sync/users/${localStorage.getItem('id')}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
@@ -160,7 +163,6 @@ export default {
                 localStorage.setItem('id',id);     
       } catch (error) {
         console.error('Error updating profile:', error);
-        // Handle error
       }
       this.editMode = false;
     },
@@ -199,8 +201,6 @@ export default {
   margin-right: -50vw;
   left: 50%;
   right: 50%;
-  /* overflow-x: auto;
-        overflow-y: auto; */
   overflow: hidden;
 }
 
@@ -208,7 +208,6 @@ export default {
 .right-panel {
   flex: 1;
   padding: 20px;
-  /* overflow: hidden; */
 }
 
 .profile-info,
@@ -263,7 +262,7 @@ button {
   padding: 8px;
 }
 
-.donodash-input {
+.input {
   width: 10px important !;
   height: 30px;
   margin-bottom: 25px;
@@ -281,7 +280,7 @@ button {
   font-size: large;
   font-style: normal;
   color: white;
-  max-height: 70.7vh;
+  height: 70.7vh;
   overflow-y: auto;
 }
 
